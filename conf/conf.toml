@@ -3,7 +3,7 @@
 whisper_url = "http://127.0.0.1:8080/inference"
 
 [models]
-# The ollama model that your summaries are piped into - change to match a model of your choosing
+# The ollama model that your transcribed voices are piped into - change to match a model of your choosing
 summary_model = "huihui_ai/qwen3-abliterated:8b-v2" # abliterated because I don't know how unhinged your DND gets
 
 # The token limit before your bot disconnects to clear its buffer - change based on your model spec if you like
