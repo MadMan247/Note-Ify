@@ -71,7 +71,7 @@ client.on("messageCreate", (message) => {
             break;
           }
 
-          let reply = `Joined ${voiceChannel.name} and listening.`;
+          let reply = `Joined ${message.member.voice.channel} and listening.`;
           let gmId = message.member.id;
 
           const { flagsFound, flagArgs } = ParseCommands(
