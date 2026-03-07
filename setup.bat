@@ -1,20 +1,15 @@
-#TODO
+::TODO
 @echo off
 setlocal enabledelayedexpansion
+set "needsrestart=false"
 
 echo =====================================
 echo   Note-Ify Windows Setup (Step Mode)
 echo =====================================
 
-:: Ask for Discord Auth ID
-echo Step 1: Enter Discord Auth ID
-set /p DISCORD_AUTH=Enter your Discord Auth ID: 
-
-if "%DISCORD_AUTH%"=="" (
-    echo Discord Auth ID cannot be empty.
-    pause
-    exit /b 1
-)
+:: Ask for Discord Token
+echo Step 1: Enter Discord Token
+set /p DISCORD_AUTH=Enter your Discord Bot Token: 
 
 echo will save to .env
 
@@ -22,11 +17,53 @@ echo will save to .env
 echo Step 2: Checking for Git
 where git >nul 2>nul
 if %errorlevel% neq 0 (
-    echo Git is not installed. Install Git for Windows first.
+    echo Git is not installed. Installing via winget.
+    winget install --id Git.Git -e --source winget --silent --accept-package-agreements --accept-source-agreements
+    set "needsrestart=true"
+) else (
+echo Git found.)
+
+"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" ^
+ -latest ^
+ -products * ^
+ -requires Microsoft.VisualStudio.Workload.NativeDesktop ^
+ -property installationPath >nul
+
+if %errorlevel% neq 0 (
+    echo Desktop development with C++ not found.
+    echo Press any key to install Visual Studio C++. This can take up several GB and take a while.
+    curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release/vs_BuildTools.exe
+
+    vs_buildtools.exe ^
+    --quiet ^
+    --wait ^
+    --norestart ^
+    --nocache ^
+    --add Microsoft.VisualStudio.Workload.VCTools ^
+    --includeRecommended
+    set "needsrestart=true"
+) else (
+    echo Desktop development with C++ workload already installed.
+)
+PAUSE
+
+cmake --version >nul 2>nul
+
+if %errorlevel% neq 0 (
+    echo CMake not found. Installing...
+    curl -L -o cmake.msi https://github.com/Kitware/CMake/releases/latest/download/cmake-latest-windows-x86_64.msi
+    msiexec /i cmake.msi /quiet /norestart ADD_CMAKE_TO_PATH=System
+    set "needsrestart=true"
+) else (
+    echo CMake already installed.
+)
+
+if "%needsrestart%"=="true"(
+    start cmd /k echo Hello
+    echo you're free to close this window. Install continuing in different window.
     pause
     exit /b 1
 )
-echo Git found.
 
 :: Clone Note-Ify (skip if already exists)
 echo Step 3: Cloning Note-Ify
@@ -87,10 +124,17 @@ if %errorlevel% neq 0 (
 
 cd ..
 
-
 :: Install Ollama
 echo Step 6: Installing Ollama. If anything past here fails it isn't our fault... probably.
-powershell -Command "irm https://ollama.com/install.ps1 | iex"
+where ollama >nul 2>nul
+if %errorlevel% neq 0 (
+    echo Ollama not found. Installing...
+    pause
+    powershell -Command "irm https://ollama.com/install.ps1 | iex"
+) else (
+    echo Ollama found:
+    ollama --version
+)
 
 :: Clone whisper.cpp
 echo Step 7: Cloning whisper.cpp
@@ -102,6 +146,7 @@ if not exist "whisper.cpp" (
         exit /b 1
     )
 ) else (
+    cd whisper.cpp
     git pull
 )
 
