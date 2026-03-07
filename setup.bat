@@ -3,6 +3,13 @@
 setlocal enabledelayedexpansion
 set "needsrestart=false"
 
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Elevating privileges...
+    powershell -Command "Start-Process '%~f0' -Verb RunAs"
+    exit /b
+)
+
 echo =====================================
 echo   Note-Ify Windows Setup (Step Mode)
 echo =====================================
