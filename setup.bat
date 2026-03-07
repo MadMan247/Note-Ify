@@ -60,14 +60,16 @@ if %errorlevel% neq 0 (
 if defined VULKAN_SDK (
     echo Vulkan SDK detected at %VULKAN_SDK%
 ) else (
-    curl -o vulkan_sdk_latest.exe -O https://sdk.lunarg.com/sdk/download/latest/windows/vulkan_sdk.exe
+    curl -L -o vulkan_sdk_latest.exe https://sdk.lunarg.com/sdk/download/latest/windows/vulkan_sdk.exe
+    echo TODO: ELEVATE PERMISSIONS
     vulkan_sdk_latest.exe --accept-licenses --default-answer --confirm-command install
     set "needsrestart=true"
 )
 
 if %needsrestart%==true (
-    set "SCRIPT=%~f0"
-    start "" cmd /k ""%SCRIPT%" child"
+    set 
+    echo TODO: MAKE MODULAR
+    start "" cmd /k "%~f0"
     echo you're free to close this window. Install continuing in different window.
     pause
     exit /b 1
