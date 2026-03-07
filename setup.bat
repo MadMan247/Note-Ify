@@ -45,7 +45,6 @@ if %errorlevel% neq 0 (
 ) else (
     echo Desktop development with C++ workload already installed.
 )
-PAUSE
 
 cmake --version >nul 2>nul
 
@@ -58,8 +57,16 @@ if %errorlevel% neq 0 (
     echo CMake already installed.
 )
 
-if "%needsrestart%"=="true"(
-    start cmd /k echo Hello
+if defined VULKAN_SDK (
+    echo Vulkan SDK detected at %VULKAN_SDK%
+) else (
+    curl -O https://sdk.lunarg.com/sdk/download/latest/windows/vulkan_sdk.exe
+    vulkansdk-windows-X64-1.2.182.1.exe --accept-licenses --default-answer --confirm-command install
+    set "needsrestart=true"
+)
+
+if %needsrestart%==true (
+    start cmd /k %~nx0
     echo you're free to close this window. Install continuing in different window.
     pause
     exit /b 1
@@ -152,7 +159,7 @@ if not exist "whisper.cpp" (
 
 :: Download model
 echo Step 8: Downloading ggml-base.bin
-if not exist "whisper.cpp\ggml-base.en.bin" (
+if not exist "ggml-base.en.bin" (
     .\models\download-ggml-model.cmd base.en
     if %errorlevel% neq 0 (
         echo Model download failed.
@@ -168,7 +175,7 @@ if not exist "whisper.cpp\ggml-base.en.bin" (
 echo Step 9: Building whisper.cpp
 cd whisper.cpp
 
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DGGML_VULKAN=1 -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DGGML_VULKAN=1 -DGGML_BLAS=ON
 if %errorlevel% neq 0 (
     echo CMake generation failed.
     pause
