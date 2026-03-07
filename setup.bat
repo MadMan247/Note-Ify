@@ -16,10 +16,7 @@ if "%DISCORD_AUTH%"=="" (
     exit /b 1
 )
 
-echo DISCORD_AUTH=%DISCORD_AUTH% > .env
-echo Saved to discord-auth.env
-pause
-
+echo will save to .env
 
 :: Check for Git
 echo Step 2: Checking for Git
@@ -30,24 +27,23 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 echo Git found.
-pause
-
 
 :: Clone Note-Ify (skip if already exists)
 echo Step 3: Cloning Note-Ify
-pause
 if not exist "Note-Ify" (
     git clone https://github.com/Spar3Chang3/Note-Ify.git
+    cd Note-Ify
     if %errorlevel% neq 0 (
         echo Git clone failed.
         pause
         exit /b 1
     )
 ) else (
-    echo Note-Ify folder already exists. Skipping clone.
+    cd Note-Ify
+    git pull
 )
-pause
 
+echo DISCORD_AUTH=%DISCORD_AUTH% > .env
 
 :: Check for Bun
 echo Step 4: Checking for Bun
@@ -60,13 +56,9 @@ if %errorlevel% neq 0 (
 ) else (
     echo Bun already installed.
 )
-pause
-
 
 :: Install dependencies and build Note-Ify
 echo Step 5: Installing dependencies and building Note-Ify
-pause
-cd Note-Ify
 
 if not exist "package.json" (
     echo package.json not found. Cannot install dependencies.
@@ -75,7 +67,10 @@ if not exist "package.json" (
 )
 
 echo Running bun install...
+echo ah, it's probably not a problem. Probably. But I'm showing a small discrepany in... well, no. It's well within acceptable bounds again. Sustaining sequence.
 bun install
+bun install
+echo just ignore it like nothing happened. If something fails next, we worry.
 if %errorlevel% neq 0 (
     echo bun install failed.
     pause
@@ -85,25 +80,20 @@ if %errorlevel% neq 0 (
 echo Building Note-Ify...
 bun build index.js --compile --outfile noteify.exe
 if %errorlevel% neq 0 (
-    echo Bun build failed.
+    echo Ok, now we worry for sure. Binary Compilation failed.
     pause
     exit /b 1
 )
 
 cd ..
-pause
 
 
 :: Install Ollama
-echo Step 6: Installing Ollama
-pause
+echo Step 6: Installing Ollama. If anything past here fails it isn't our fault... probably.
 powershell -Command "irm https://ollama.com/install.ps1 | iex"
-pause
-
 
 :: Clone whisper.cpp
 echo Step 7: Cloning whisper.cpp
-pause
 if not exist "whisper.cpp" (
     git clone https://github.com/ggml-org/whisper.cpp.git
     if %errorlevel% neq 0 (
@@ -112,17 +102,13 @@ if not exist "whisper.cpp" (
         exit /b 1
     )
 ) else (
-    echo whisper.cpp folder already exists. Skipping clone.
+    git pull
 )
-pause
-
 
 :: Download model
 echo Step 8: Downloading ggml-base.bin
-pause
-if not exist "whisper.cpp\ggml-base.bin" (
-    curl -L -o whisper.cpp\ggml-base.bin ^
-    https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin?download=true
+if not exist "whisper.cpp\ggml-base.en.bin" (
+    .\models\download-ggml-model.cmd base.en
     if %errorlevel% neq 0 (
         echo Model download failed.
         pause
@@ -131,12 +117,10 @@ if not exist "whisper.cpp\ggml-base.bin" (
 ) else (
     echo Model already exists. Skipping download.
 )
-pause
 
 
 :: Build whisper.cpp
 echo Step 9: Building whisper.cpp
-pause
 cd whisper.cpp
 
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
@@ -146,8 +130,6 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-pause
-
 cmake --build build --config Release
 if %errorlevel% neq 0 (
     echo Build failed.
@@ -156,8 +138,6 @@ if %errorlevel% neq 0 (
 )
 
 cd ..
-pause
-
 
 echo =====================================
 echo            Setup Complete
