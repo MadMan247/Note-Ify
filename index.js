@@ -9,7 +9,7 @@ import {
   Yellow,
 } from "./lib/utils.js";
 import Handler from "./lib/Handler.js";
-import { PrintRuntimeVersions } from "./test.js";
+import { PrintRuntimeVersions, DetectPlatform } from "./lib/test.js";
 
 const client = new Client({
   intents: [
@@ -300,7 +300,7 @@ client.on("messageCreate", (message) => {
   })();
 });
 
-PrintRuntimeVersions();
+console.log("Running on:", DetectPlatform());
 
 client
   .login(process.env.DISCORD_TOKEN ?? DISCORD_TOKEN)
