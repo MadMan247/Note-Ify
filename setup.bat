@@ -172,18 +172,6 @@ if not exist "whisper.cpp" (
     git pull
 )
 
-:: Download model
-echo Step 8: Downloading ggml-base.bin
-if not exist "ggml-base.en.bin" (
-    .\models\download-ggml-model.cmd base.en
-    if %errorlevel% neq 0 (
-        echo Model download failed.
-    )
-) else (
-    echo Model already exists. Skipping download.
-)
-
-
 :: Build whisper.cpp
 echo Step 9: Building whisper.cpp
 
@@ -209,6 +197,19 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+:: Download model
+echo Step 8: Downloading ggml-base.bin
+if not exist ".\build\bin\Release\models\ggml-base.en.bin" (
+    .\models\download-ggml-model.cmd base.en
+    mkdir .\build\bin\Release\models
+    move ggml-base.en.bin .\build\bin\Release\models
+    if %errorlevel% neq 0 (
+        echo Model download failed.
+    )
+) else (
+    echo Model already exists. Skipping download.
+)
+
 cd ..
 
 :: -------------------------
@@ -225,7 +226,6 @@ echo     exit /b
 echo ^)
 echo cd /d "Note-ify"
 echo start noteify.exe
-echo pause
 ) > start_noteify.bat
 )
 
@@ -243,7 +243,6 @@ echo     exit /b
 echo ^)
 echo echo Starting Ollama server...
 echo start "" ollama serve
-echo pause
 ) > start_ollama.bat
 )
 
@@ -259,9 +258,8 @@ echo     echo Whisper server already running.
 echo     pause
 echo     exit /b
 echo ^)
-echo cd /d "whisper.cpp\build\bin"
+echo cd /d "whisper.cpp\build\bin\release"
 echo start whisper-server.exe
-echo pause
 ) > start_whisper.bat
 )
 
