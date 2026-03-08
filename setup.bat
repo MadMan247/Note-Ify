@@ -213,7 +213,71 @@ if %errorlevel% neq 0 (
 
 cd ..
 
+:: -------------------------
+:: Create start_noteify.bat
+:: -------------------------
+if not exist start_noteify.bat (
+(
+echo @echo off
+echo tasklist ^| find /i "noteify.exe" ^>nul
+echo if %%errorlevel%%==0 (
+echo     echo Noteify already running.
+echo     pause
+echo     exit /b
+echo ^)
+echo cd /d "Note-ify"
+echo start noteify.exe
+echo pause
+) > start_noteify.bat
+)
+
+:: -------------------------
+:: Create start_ollama.bat
+:: -------------------------
+if not exist start_ollama.bat (
+(
+echo @echo off
+echo tasklist ^| find /i "ollama.exe" ^>nul
+echo if %%errorlevel%%==0 (
+echo     echo Ollama already running.
+echo     pause
+echo     exit /b
+echo ^)
+echo echo Starting Ollama server...
+echo start "" ollama serve
+echo pause
+) > start_ollama.bat
+)
+
+:: -------------------------
+:: Create start_whisper.bat
+:: -------------------------
+if not exist start_whisper.bat (
+(
+echo @echo off
+echo tasklist ^| find /i "whisper-server.exe" ^>nul
+echo if %%errorlevel%%==0 (
+echo     echo Whisper server already running.
+echo     pause
+echo     exit /b
+echo ^)
+echo cd /d "whisper.cpp\build\bin"
+echo start whisper-server.exe
+echo pause
+) > start_whisper.bat
+)
+
+if not exist start_all.bat (
+(
+echo @echo off
+echo start "Noteify" cmd /k start_noteify.bat
+echo start "Ollama"  cmd /k start_ollama.bat
+echo start "Whisper" cmd /k start_whisper.bat
+) > start_all.bat
+)
+
 echo =====================================
 echo            Setup Complete
 echo =====================================
+echo Run "start_all.bat" to start all services after you modify Note-ify's config.toml
 pause
