@@ -161,6 +161,7 @@ if %errorlevel% neq 0 (
 echo Step 7: Cloning whisper.cpp
 if not exist "whisper.cpp" (
     git clone https://github.com/ggml-org/whisper.cpp.git
+    cd whisper.cpp
     if %errorlevel% neq 0 (
         echo whisper.cpp clone failed.
         pause
@@ -177,8 +178,6 @@ if not exist "ggml-base.en.bin" (
     .\models\download-ggml-model.cmd base.en
     if %errorlevel% neq 0 (
         echo Model download failed.
-        pause
-        exit /b 1
     )
 ) else (
     echo Model already exists. Skipping download.
@@ -187,7 +186,6 @@ if not exist "ggml-base.en.bin" (
 
 :: Build whisper.cpp
 echo Step 9: Building whisper.cpp
-cd whisper.cpp
 
 vulkaninfo >nul 2>nul
 
