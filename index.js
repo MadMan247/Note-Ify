@@ -306,3 +306,5 @@ client
   .login(process.env.DISCORD_TOKEN ?? DISCORD_TOKEN)
   .then(() => console.log(Green("Logged in and awaiting vc join")))
   .catch((err) => console.error(Red("Failed to login:"), err));
+
+// TODO: implement whisper server checker/process launcher
