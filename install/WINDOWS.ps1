@@ -1,5 +1,22 @@
 #Requires -Version 5.1
 
+# Self-elevate to Administrator if not already elevated
+$identity  = [Security.Principal.WindowsIdentity]::GetCurrent()
+$principal = New-Object Security.Principal.WindowsPrincipal($identity)
+
+if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+
+    Write-Host "Requesting Administrator privileges..." -ForegroundColor Yellow
+
+    $scriptPath = $MyInvocation.MyCommand.Definition
+
+    Start-Process powershell `
+        -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`"" `
+        -Verb RunAs
+
+    exit
+}
+
 $ErrorActionPreference = "Stop"
 
 function Write-Step {
@@ -133,7 +150,7 @@ try {
         -ArgumentList @(
             "-NoExit",
             "-Command",
-            'ollama run huihui_ai/qwen3-abliterated:8b-v2'
+            'ollama pull huihui_ai/qwen3-abliterated:8b-v2'
         ) | Out-Null
 
     $programFiles = ${env:ProgramFiles}
