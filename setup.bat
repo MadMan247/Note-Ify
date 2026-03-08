@@ -198,9 +198,9 @@ if %errorlevel% neq 0 (
 
 :: Download model
 echo Step 8: Downloading ggml-base.bin
+mkdir .\build\bin\Release\models
 if not exist ".\build\bin\Release\models\ggml-base.en.bin" (
     .\models\download-ggml-model.cmd base.en
-    mkdir .\build\bin\Release\models
     move ggml-base.en.bin .\build\bin\Release\models
     if %errorlevel% neq 0 (
         echo Model download failed.
