@@ -150,7 +150,6 @@ echo Step 6: Installing Ollama. If anything past here fails it isn't our fault..
 where ollama >nul 2>nul
 if %errorlevel% neq 0 (
     echo Ollama not found. Installing...
-    pause
     powershell -Command "irm https://ollama.com/install.ps1 | iex"
 ) else (
     echo Ollama found:
