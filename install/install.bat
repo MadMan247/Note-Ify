@@ -17,8 +17,21 @@ if %errorlevel% neq 0 (
 )
 
 echo =====================================
-echo   Note-Ify Windows Setup (Step Mode)
+echo   Note-Ify Windows Setup
 echo =====================================
+
+:: Get RAM in GB
+for /f %%A in ('powershell -command "[int]((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory/1GB)"') do set RAMGB=%%A
+
+echo Detected RAM: %RAMGB% GB
+
+if %RAMGB% LSS 16 (
+    echo WARNING: Less than 16GB RAM detected.
+    echo Your PC may not be able to run Note-ify.
+    echo ONLY continue if you know what you're doing.
+)
+
+echo Continuing installation...
 
 :: Ask for Discord Token
 echo Step 1: Enter Discord Token
