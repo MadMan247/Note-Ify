@@ -10,7 +10,27 @@ This bot is a work in progress, it is nothing special, and it heavily relies on 
 
 As of right now, the bot takes streams from a discord vc, transcribes them using whisper.cpp, and feeds the resulted text to an LLM through Ollama. I've now included a `config.toml` file that should easily let you control models, whisper.cpp endpoints, and a few other things.
 
-## BUILDING
+## INSTALLATION INSTRUCTIONS
+
+Note-ify itself is not a very intensive program, but it relies on Whisper.cpp and Ollama, which can be quite resource hungry depending on the models you run. Because of this, you should expect the combined packages to exceed 12 GB of RAM and Storage usage on your device.
+
+### WINDOWS
+
+Right-click on the following link and select "save link as" https://raw.githubusercontent.com/Spar3Chang3/Note-Ify/refs/heads/main/install/install.bat
+
+Run the .bat file and follow instructions as they are provided in the script provided. You may need to launch it twice.
+
+### LINUX
+
+Install prerequisites:
+
+Ubuntu: `sudo apt install git cmake`
+
+Fedora: `sudo dnf install git cmake`
+
+Opensuse: `sudo zypper install git cmake`
+
+## DEVELOPMENT ENVIRONMENT
 
 I used bun for the sake of compiling a smaller binary. Using Node is possible, but you will need other package dependencies and imports within `index.js`. I do not plan to give node setup instructions, so I highly recommend just sticking with bun. The following instructions should help you with setting up the repo, just don't forget your discord token. It can either be added with:
 
