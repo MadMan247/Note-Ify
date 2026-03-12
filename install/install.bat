@@ -76,8 +76,7 @@ cmake --version >nul 2>nul
 
 if %errorlevel% neq 0 (
     echo CMake not found. Installing...
-    curl -L -o cmake.msi https://github.com/Kitware/CMake/releases/latest/download/cmake-latest-windows-x86_64.msi
-    msiexec /i cmake.msi /quiet /norestart ADD_CMAKE_TO_PATH=System
+    winget install Kitware.CMake --silent --accept-package-agreements --accept-source-agreements --override "/quiet /norestart ADD_CMAKE_TO_PATH=System"
     set "needsrestart=true"
 ) else (
     echo CMake already installed.
