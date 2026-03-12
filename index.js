@@ -315,8 +315,6 @@ client.on("messageCreate", (message) => {
   })();
 });
 
-console.log("Running on:", DetectPlatform());
-
 client
   .login(process.env.DISCORD_TOKEN ?? DISCORD_TOKEN)
   .then(() => console.log(Green("Logged in and awaiting vc join")))
