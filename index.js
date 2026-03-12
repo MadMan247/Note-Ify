@@ -9,7 +9,7 @@ import {
   Yellow,
   COLLECTOR_DURATION,
 } from "./lib/utils.js";
-import Handler from "./Handler.js";
+import Handler from "./lib/Handler.js";
 
 const client = new Client({
   intents: [
